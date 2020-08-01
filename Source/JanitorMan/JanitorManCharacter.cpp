@@ -7,10 +7,9 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
-#include "HeadMountedDisplayFunctionLibrary.h"
 #include "Kismet/GameplayStatics.h"
-#include "MotionControllerComponent.h"
-#include "XRMotionControllerBase.h" // for FXRMotionControllerBase::RightHandSourceId
+#include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "Grabber.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -31,6 +30,9 @@ AJanitorManCharacter::AJanitorManCharacter()
 	FirstPersonCameraComponent->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
+
+	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("Physics Handel"));
+	Grabber = CreateDefaultSubobject<UGrabber>(TEXT("Grabber"));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -56,6 +58,9 @@ void AJanitorManCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAxis("TurnRate", this, &AJanitorManCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AJanitorManCharacter::LookUpAtRate);
+
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AJanitorManCharacter::GrabPressed);
+	PlayerInputComponent->BindAction("Interact", IE_Released, this, &AJanitorManCharacter::GrabReleesed);
 }
 
 void AJanitorManCharacter::MoveForward(float Value)
@@ -86,4 +91,18 @@ void AJanitorManCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+}
+
+void AJanitorManCharacter::GrabPressed()
+{
+	if (!ensure(Grabber != nullptr)) { return; }
+
+	Grabber->Grab();
+}
+
+void AJanitorManCharacter::GrabReleesed()
+{
+	if (!ensure(Grabber != nullptr)) { return; }
+
+	Grabber->Released();
 }
