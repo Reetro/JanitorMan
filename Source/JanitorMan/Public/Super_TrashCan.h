@@ -10,9 +10,6 @@ UCLASS()
 class JANITORMAN_API ASuper_TrashCan : public AActor
 {
 	GENERATED_BODY()
-
-private:
-	int32 CurrentTrashCount = 0;
 	
 public:	
 	// Sets default values for this actor's properties

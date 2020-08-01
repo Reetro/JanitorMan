@@ -27,8 +27,6 @@ void ASuper_TrashCan::BeginPlay()
 	
 	BoxCollison->OnComponentBeginOverlap.AddDynamic(this, &ASuper_TrashCan::OnOverlapBegin);
 
-	CurrentTrashCount = 0;
-
 	GetLevelState();
 }
 
@@ -55,14 +53,6 @@ void ASuper_TrashCan::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 
 	if (!LevelState->WonLevel)
 	{
-		CurrentTrashCount++;
-
-		if (CurrentTrashCount >= MaxTrashCount)
-		{
-			LevelState->WonLevel = true;
-			LevelState->LostLevel = false;
-
-			LevelState->OnLevelDone();
-		}
+		LevelState->AddToTrashCount();
 	}
 }

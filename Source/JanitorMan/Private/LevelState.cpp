@@ -12,22 +12,11 @@ ALevelState::ALevelState()
 	TimerDeltaTick = 0.1f;
 }
 
-void ALevelState::OnLevelDone()
+void ALevelState::BeginPlay()
 {
-	if (WonLevel)
-	{
-		// TODO Create a win state
-		UE_LOG(LogTemp, Log, TEXT("Level Won"))
+	Super::BeginPlay();
 
-		GetWorldTimerManager().ClearTimer(LevelTimerHandel);
-	}
-	else if (LostLevel)
-	{
-		// TODO Create a game over state
-		UE_LOG(LogTemp, Log, TEXT("Level Lost"))
-
-		GetWorldTimerManager().ClearTimer(LevelTimerHandel);
-	}
+	CurrentTrashCount = 0;
 }
 
 void ALevelState::StartTimer()
@@ -59,4 +48,35 @@ void ALevelState::OnTimerDone()
 	WonLevel = false;
 
 	OnLevelDone();
+}
+
+void ALevelState::AddToTrashCount()
+{
+	CurrentTrashCount++;
+
+	if (CurrentTrashCount >= MaxTrash)
+	{
+		WonLevel = true;
+		LostLevel = false;
+
+		OnLevelDone();
+	}
+}
+
+void ALevelState::OnLevelDone()
+{
+	if (WonLevel)
+	{
+		// TODO Create a win state
+		UE_LOG(LogTemp, Log, TEXT("Level Won"))
+
+		GetWorldTimerManager().ClearTimer(LevelTimerHandel);
+	}
+	else if (LostLevel)
+	{
+		// TODO Create a game over state
+		UE_LOG(LogTemp, Log, TEXT("Level Lost"))
+
+		GetWorldTimerManager().ClearTimer(LevelTimerHandel);
+	}
 }

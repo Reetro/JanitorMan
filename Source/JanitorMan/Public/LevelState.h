@@ -44,10 +44,16 @@ public:
 	bool WonLevel = true;
 	bool LostLevel = false;
 
+	void AddToTrashCount();
+
 private:
+	int32 CurrentTrashCount = 0;
 
 	float TimeLeft;
 	float TimerDeltaTick;
 
 	FTimerHandle LevelTimerHandel;
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 };
