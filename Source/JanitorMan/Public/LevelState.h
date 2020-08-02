@@ -58,6 +58,7 @@ public:
 	FString CurrentRank;
 
 	void AddToTrashCount();
+	void AddPlayerCash();
 
 private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))

@@ -2,6 +2,8 @@
 
 
 #include "LevelState.h"
+#include "Kismet/GameplayStatics.h"
+#include "PlayerGamemode.h"
 
 // Sets default values
 ALevelState::ALevelState()
@@ -76,6 +78,8 @@ void ALevelState::OnLevelDone()
 	CurrentRank = GetRank();
 
 	BeenRanked = true;
+
+	AddPlayerCash();
 }
 
 FString ALevelState::GetRank()
@@ -102,6 +106,35 @@ FString ALevelState::GetRank()
 	}
 	else
 	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to give player a rank"))
 		return "Unable to get rank";
+	}
+}
+
+void ALevelState::AddPlayerCash()
+{
+	auto Gamemode = Cast<APlayerGamemode>(UGameplayStatics::GetGameMode(this));
+
+	if (!ensure(Gamemode != nullptr)) { return; }
+
+	if (CurrentRank.Contains("S"))
+	{
+		Gamemode->AddToPlayerCash(SRank.MoneyToGive);
+	}
+	else if (CurrentRank.Contains("A"))
+	{
+		Gamemode->AddToPlayerCash(ARank.MoneyToGive);
+	}
+	else if (CurrentRank.Contains("C"))
+	{
+		Gamemode->AddToPlayerCash(CRank.MoneyToGive);
+	}
+	else if (CurrentRank.Contains("F"))
+	{
+		Gamemode->AddToPlayerCash(FRank.MoneyToGive);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to give player cash. Player has no rank"))
 	}
 }
