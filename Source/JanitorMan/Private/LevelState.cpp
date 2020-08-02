@@ -17,6 +17,7 @@ void ALevelState::BeginPlay()
 	Super::BeginPlay();
 
 	CurrentTrashCount = 0;
+	BeenRanked = false;
 }
 
 void ALevelState::StartTimer()
@@ -42,43 +43,48 @@ void ALevelState::RefreshTimer()
 
 void ALevelState::OnTimerDone()
 {
-	UE_LOG(LogTemp, Log, TEXT("Timer Done"))
-
-	LostLevel = true;
-	WonLevel = false;
-
 	OnLevelDone();
 }
 
 void ALevelState::AddToTrashCount()
 {
-	CurrentTrashCount++;
-
-	if (CurrentTrashCount >= MaxTrash)
+	if (!BeenRanked)
 	{
-		WonLevel = true;
-		LostLevel = false;
-
-		OnLevelDone();
+		CurrentTrashCount++;
 	}
 }
 
 void ALevelState::OnLevelDone()
 {
-	UpdateRank("S");
+	GetWorldTimerManager().ClearTimer(LevelTimerHandel);
 
-	if (WonLevel)
+	CurrentRank = GetRank();
+}
+
+FString ALevelState::GetRank()
+{
+	if (CurrentTrashCount >= SRankAmount)
 	{
-		// TODO Create a win state
-		UE_LOG(LogTemp, Log, TEXT("Level Won"))
-
-		GetWorldTimerManager().ClearTimer(LevelTimerHandel);
+		return "S";
 	}
-	else if (LostLevel)
+	else if (CurrentTrashCount >= ARankAmount)
 	{
-		// TODO Create a game over state
-		UE_LOG(LogTemp, Log, TEXT("Level Lost"))
-
-		GetWorldTimerManager().ClearTimer(LevelTimerHandel);
+		return "A";
+	}
+	else if (CurrentTrashCount >= BRankAmount)
+	{
+		return "B";
+	}
+	else if (CurrentTrashCount >= CRankAmount)
+	{
+		return "C";
+	}
+	else if (CurrentTrashCount >= FRankAmount || CurrentTrashCount <= FRankAmount)
+	{
+		return "F";
+	}
+	else
+	{
+		return "Unable to get rank";
 	}
 }

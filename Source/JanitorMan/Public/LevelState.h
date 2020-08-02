@@ -34,28 +34,39 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
 	float LevelTime = 60.0f;
 
-	// Trash need to win
+	// Trash need to get S rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	int32 MaxTrash = 10;
+	int32 SRankAmount = 10;
+	// Trash need to get A rank
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
+	int32 ARankAmount = 8;
+	// Trash need to get B rank
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
+	int32 BRankAmount = 6;
+	// Trash need to get C rank
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
+	int32 CRankAmount = 4;
+	// Trash need to get F rank
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
+	int32 FRankAmount = 2;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Level Settings")
 	float TimeRemaining;
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Level Events")
-	void UpdateRank(const FString& LevelRank);
-
-	bool WonLevel = true;
-	bool LostLevel = false;
-
-	FString LevelScore;
+	UPROPERTY(BlueprintReadWrite)
+	FString CurrentRank;
 
 	void AddToTrashCount();
 
 private:
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 CurrentTrashCount = 0;
 
 	float TimeLeft;
 	float TimerDeltaTick;
+	bool BeenRanked;
+
+	FString GetRank();
 
 	FTimerHandle LevelTimerHandel;
 

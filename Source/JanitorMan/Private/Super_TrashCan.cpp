@@ -51,8 +51,40 @@ void ASuper_TrashCan::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 {
 	if (!ensure(LevelState != nullptr)) { return; }
 
-	if (!LevelState->WonLevel)
+	if (!DoesActorExistInCan(OtherActor))
 	{
+		ActorsInCan.Add(OtherActor);
+
 		LevelState->AddToTrashCount();
 	}
+}
+
+bool ASuper_TrashCan::DoesActorExistInCan(AActor* Actor)
+{
+	if (!ensure(Actor != nullptr)) { return false; }
+
+	bool LocalBool = false;
+
+	for (AActor* CurrentActor : ActorsInCan)
+	{
+		if (CurrentActor)
+		{
+			if (CurrentActor == Actor)
+			{
+				LocalBool = true;
+				break;
+			}
+			else
+			{
+				LocalBool = false;
+				continue;
+			}
+		}
+		else
+		{
+			LocalBool = false;
+			continue;
+		}
+	}
+	return LocalBool;
 }

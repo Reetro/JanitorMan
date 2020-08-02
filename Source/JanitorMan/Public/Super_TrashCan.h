@@ -35,4 +35,8 @@ private:
 	class ALevelState* LevelState = nullptr;
 
 	void GetLevelState();
+
+	TArray<AActor*> ActorsInCan;
+
+	bool DoesActorExistInCan(AActor* Actor);
 };
