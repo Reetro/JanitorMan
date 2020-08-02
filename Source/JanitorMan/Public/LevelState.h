@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "RankDetails.h"
 #include "GameFramework/Actor.h"
 #include "LevelState.generated.h"
 
@@ -36,19 +37,19 @@ public:
 
 	// Trash need to get S rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	int32 SRankAmount = 10;
+	FRankDetails SRank;
 	// Trash need to get A rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	int32 ARankAmount = 8;
+	FRankDetails ARank;
 	// Trash need to get B rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	int32 BRankAmount = 6;
+	FRankDetails BRank;
 	// Trash need to get C rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	int32 CRankAmount = 4;
+	FRankDetails CRank;
 	// Trash need to get F rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	int32 FRankAmount = 2;
+	FRankDetails FRank;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Level Settings")
 	float TimeRemaining;

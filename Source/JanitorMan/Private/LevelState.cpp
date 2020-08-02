@@ -10,6 +10,21 @@ ALevelState::ALevelState()
 	PrimaryActorTick.bCanEverTick = false;
 
 	TimerDeltaTick = 0.1f;
+
+	SRank.MoneyToGive = 100;
+	SRank.RankAmount = 10;
+
+	ARank.MoneyToGive = 90;
+	ARank.RankAmount = 8;
+
+	BRank.MoneyToGive = 80;
+	CRank.RankAmount = 6;
+
+	CRank.MoneyToGive = 70;
+	CRank.RankAmount = 4;
+
+	FRank.MoneyToGive = 60;
+	FRank.RankAmount = 2;
 }
 
 void ALevelState::BeginPlay()
@@ -59,27 +74,29 @@ void ALevelState::OnLevelDone()
 	GetWorldTimerManager().ClearTimer(LevelTimerHandel);
 
 	CurrentRank = GetRank();
+
+	BeenRanked = true;
 }
 
 FString ALevelState::GetRank()
 {
-	if (CurrentTrashCount >= SRankAmount)
+	if (CurrentTrashCount >= SRank.RankAmount)
 	{
 		return "S";
 	}
-	else if (CurrentTrashCount >= ARankAmount)
+	else if (CurrentTrashCount >= ARank.RankAmount)
 	{
 		return "A";
 	}
-	else if (CurrentTrashCount >= BRankAmount)
+	else if (CurrentTrashCount >= BRank.RankAmount)
 	{
 		return "B";
 	}
-	else if (CurrentTrashCount >= CRankAmount)
+	else if (CurrentTrashCount >= CRank.RankAmount)
 	{
 		return "C";
 	}
-	else if (CurrentTrashCount >= FRankAmount || CurrentTrashCount <= FRankAmount)
+	else if (CurrentTrashCount >= FRank.RankAmount || CurrentTrashCount <= FRank.RankAmount)
 	{
 		return "F";
 	}
