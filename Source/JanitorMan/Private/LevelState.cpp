@@ -65,6 +65,8 @@ void ALevelState::AddToTrashCount()
 
 void ALevelState::OnLevelDone()
 {
+	UpdateRank("S");
+
 	if (WonLevel)
 	{
 		// TODO Create a win state

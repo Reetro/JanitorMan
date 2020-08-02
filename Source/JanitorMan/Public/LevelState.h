@@ -27,7 +27,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Level Function")
 	void OnTimerDone();
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Level Function")
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Level Events")
 	void OnTimerTick();
 
 	// How long the level lasts for
@@ -41,8 +41,13 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Level Settings")
 	float TimeRemaining;
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Level Events")
+	void UpdateRank(const FString& LevelRank);
+
 	bool WonLevel = true;
 	bool LostLevel = false;
+
+	FString LevelScore;
 
 	void AddToTrashCount();
 
