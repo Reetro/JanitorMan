@@ -37,19 +37,19 @@ public:
 
 	// Trash need to get S rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	FRankDetails SRank;
+	int32 SRankRequirement;
 	// Trash need to get A rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	FRankDetails ARank;
+	int32 ARankRequirement;
 	// Trash need to get B rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	FRankDetails BRank;
+	int32 BRankRequirement;
 	// Trash need to get C rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	FRankDetails CRank;
+	int32 CRankRequirement;
 	// Trash need to get F rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	FRankDetails FRank;
+	int32 FRankRequirement;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Level Settings")
 	float TimeRemaining;
@@ -58,7 +58,6 @@ public:
 	FString CurrentRank;
 
 	void AddToTrashCount();
-	void AddPlayerCash();
 
 private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
