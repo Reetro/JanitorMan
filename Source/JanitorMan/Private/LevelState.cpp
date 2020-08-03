@@ -60,7 +60,7 @@ void ALevelState::AddToTrashCount()
 	}
 }
 
-void ALevelState::OnLevelDone()
+void ALevelState::OnLevelDone_Implementation()
 {
 	GetWorldTimerManager().ClearTimer(LevelTimerHandel);
 

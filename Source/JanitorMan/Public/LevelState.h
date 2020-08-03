@@ -16,8 +16,9 @@ public:
 	// Sets default values for this actor's properties
 	ALevelState();
 
-	UFUNCTION(BlueprintCallable, Category = "Level Function")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Level Events")
 	void OnLevelDone();
+	void OnLevelDone_Implementation();
 
 	UFUNCTION(BlueprintCallable, Category = "Level Function")
 	void StartTimer();
