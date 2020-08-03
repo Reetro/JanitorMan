@@ -50,17 +50,16 @@ void ALevelState::RefreshTimer()
 
 	if (TimeRemaining <= 0)
 	{
+		TimeRemaining = 0.0f;
+
 		OnTimerDone();
+
+		OnLevelDone();
 	}
 	else
 	{
 		OnTimerTick();
 	}
-}
-
-void ALevelState::OnTimerDone()
-{
-	OnLevelDone();
 }
 
 void ALevelState::AddToTrashCount()

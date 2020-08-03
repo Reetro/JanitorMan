@@ -25,7 +25,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Level Function")
 	void RefreshTimer();
 
-	UFUNCTION(BlueprintCallable, Category = "Level Function")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Level Function")
 	void OnTimerDone();
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Level Events")
