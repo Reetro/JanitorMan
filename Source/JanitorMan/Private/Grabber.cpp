@@ -43,16 +43,25 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 void UGrabber::Grab()
 {
 	/// LINE TRACE and see if we reach any actors with physics body collision channel set
-	auto HitResult = GetFirstPhysicsBodyInReach();
-	auto ComponentToGrab = HitResult.GetComponent();
-	auto ActorHit = HitResult.GetActor();
+	auto PhysicsHitResult = GetFirstPhysicsBodyInReach();
+	auto ComponentToGrab = PhysicsHitResult.GetComponent();
+	auto ActorHit = PhysicsHitResult.GetActor();
+
+	auto PawnHitResult = GetFirstPawnInReach();
+	auto PawnHit = PawnHitResult.GetActor();
 
 	/// If we hit something then attach a physics handle
-	if (!PhysicsHandle) { return; }
-	if (ActorHit)
+	if (PawnHit)
 	{
-		// attach physics handle
-		PhysicsHandle->GrabComponentAtLocationWithRotation(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation(), ComponentToGrab->GetOwner()->GetActorRotation());
+		UE_LOG(LogTemp, Log, TEXT("Test"))
+	}
+	else if (PhysicsHandle)
+	{
+		if (ActorHit)
+		{
+			// attach physics handle
+			PhysicsHandle->GrabComponentAtLocationWithRotation(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation(), ComponentToGrab->GetOwner()->GetActorRotation());
+		}
 	}
 }
 
@@ -80,6 +89,31 @@ const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 	/// Line-trace (AKA ray-cast) out to reach distance
 	FHitResult Hit;
 	GetWorld()->LineTraceSingleByObjectType(OUT Hit, LineTraceStart, LineTraceEnd, FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody), TraceParameters);
+
+	if (DebugPickup)
+	{
+		DrawDebugLine(GetWorld(), LineTraceStart, LineTraceEnd, FColor::Green, false, 5.0f, 0.0f, 10.0f);
+
+		if (Hit.Actor != nullptr)
+		{
+			UE_LOG(LogTemp, Log, TEXT("Hit: %s"), *Hit.Actor->GetName());
+		}
+	}
+
+	return Hit;
+}
+
+const FHitResult UGrabber::GetFirstPawnInReach()
+{
+	FVector LineTraceStart = GetReachLineStart();
+	FVector LineTraceEnd = GetReachLineEnd();
+
+	/// Setup query parameters
+	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
+
+	/// Line-trace (AKA ray-cast) out to reach distance
+	FHitResult Hit;
+	GetWorld()->LineTraceSingleByObjectType(OUT Hit, LineTraceStart, LineTraceEnd, FCollisionObjectQueryParams(ECollisionChannel::ECC_Pawn), TraceParameters);
 
 	if (DebugPickup)
 	{
