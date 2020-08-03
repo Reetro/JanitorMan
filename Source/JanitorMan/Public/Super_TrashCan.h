@@ -21,9 +21,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	class UBoxComponent* BoxCollison;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int32 MaxTrashCount = 4;
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -42,9 +42,14 @@ private:
 
 	void FindAttachedPhysicsComponent();
 
+	void FindInputComponent();
+
 	const FHitResult GetFirstPhysicsBodyInReach();
 
 	FVector GetReachLineStart();
 
 	FVector GetReachLineEnd();
+
+	void GrabPressed();
+	void GrabReleesed();
 };

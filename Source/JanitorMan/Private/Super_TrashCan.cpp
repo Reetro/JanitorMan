@@ -43,6 +43,7 @@ void ASuper_TrashCan::GetLevelState()
 		if (state)
 		{
 			LevelState = state;
+			break;
 		}
 	}
 }
