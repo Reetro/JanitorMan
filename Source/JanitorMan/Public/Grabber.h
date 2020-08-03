@@ -45,9 +45,9 @@ private:
 	void FindInputComponent();
 
 	const FHitResult GetFirstPhysicsBodyInReach();
+	const FHitResult GetFirstPawnInReach();
 
 	FVector GetReachLineStart();
-
 	FVector GetReachLineEnd();
 
 	void GrabPressed();
