@@ -3,7 +3,6 @@
 
 #include "LevelState.h"
 #include "Kismet/GameplayStatics.h"
-#include "PlayerGamemode.h"
 
 // Sets default values
 ALevelState::ALevelState()
@@ -13,20 +12,11 @@ ALevelState::ALevelState()
 
 	TimerDeltaTick = 0.1f;
 
-	SRank.MoneyToGive = 100;
-	SRank.RankAmount = 10;
-
-	ARank.MoneyToGive = 90;
-	ARank.RankAmount = 8;
-
-	BRank.MoneyToGive = 80;
-	BRank.RankAmount = 6;
-
-	CRank.MoneyToGive = 70;
-	CRank.RankAmount = 4;
-
-	FRank.MoneyToGive = 60;
-	FRank.RankAmount = 2;
+	SRankRequirement = 10;
+	ARankRequirement = 8;
+	BRankRequirement = 6;
+	CRankRequirement = 4;
+	FRankRequirement = 2;
 }
 
 void ALevelState::BeginPlay()
@@ -77,29 +67,27 @@ void ALevelState::OnLevelDone()
 	CurrentRank = GetRank();
 
 	BeenRanked = true;
-
-	AddPlayerCash();
 }
 
 FString ALevelState::GetRank()
 {
-	if (CurrentTrashCount >= SRank.RankAmount)
+	if (CurrentTrashCount >= SRankRequirement)
 	{
 		return "S";
 	}
-	else if (CurrentTrashCount >= ARank.RankAmount)
+	else if (CurrentTrashCount >= ARankRequirement)
 	{
 		return "A";
 	}
-	else if (CurrentTrashCount >= BRank.RankAmount)
+	else if (CurrentTrashCount >= BRankRequirement)
 	{
 		return "B";
 	}
-	else if (CurrentTrashCount >= CRank.RankAmount)
+	else if (CurrentTrashCount >= CRankRequirement)
 	{
 		return "C";
 	}
-	else if (CurrentTrashCount >= FRank.RankAmount || CurrentTrashCount <= FRank.RankAmount)
+	else if (CurrentTrashCount >= FRankRequirement || CurrentTrashCount <= FRankRequirement)
 	{
 		return "F";
 	}
@@ -107,33 +95,5 @@ FString ALevelState::GetRank()
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed to give player a rank"))
 		return "Unable to get rank";
-	}
-}
-
-void ALevelState::AddPlayerCash()
-{
-	auto Gamemode = Cast<APlayerGamemode>(UGameplayStatics::GetGameMode(this));
-
-	if (!ensure(Gamemode != nullptr)) { return; }
-
-	if (CurrentRank.Contains("S"))
-	{
-		Gamemode->AddToPlayerCash(SRank.MoneyToGive);
-	}
-	else if (CurrentRank.Contains("A"))
-	{
-		Gamemode->AddToPlayerCash(ARank.MoneyToGive);
-	}
-	else if (CurrentRank.Contains("C"))
-	{
-		Gamemode->AddToPlayerCash(CRank.MoneyToGive);
-	}
-	else if (CurrentRank.Contains("F"))
-	{
-		Gamemode->AddToPlayerCash(FRank.MoneyToGive);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to give player cash. Player has no rank"))
 	}
 }
