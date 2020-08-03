@@ -58,9 +58,6 @@ void AJanitorManCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	PlayerInputComponent->BindAxis("TurnRate", this, &AJanitorManCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AJanitorManCharacter::LookUpAtRate);
-
-	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AJanitorManCharacter::GrabPressed);
-	PlayerInputComponent->BindAction("Interact", IE_Released, this, &AJanitorManCharacter::GrabReleesed);
 }
 
 void AJanitorManCharacter::MoveForward(float Value)
@@ -91,18 +88,4 @@ void AJanitorManCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
-}
-
-void AJanitorManCharacter::GrabPressed()
-{
-	if (!ensure(Grabber != nullptr)) { return; }
-
-	Grabber->Grab();
-}
-
-void AJanitorManCharacter::GrabReleesed()
-{
-	if (!ensure(Grabber != nullptr)) { return; }
-
-	Grabber->Released();
 }
