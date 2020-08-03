@@ -20,7 +20,7 @@ ALevelState::ALevelState()
 	ARank.RankAmount = 8;
 
 	BRank.MoneyToGive = 80;
-	CRank.RankAmount = 6;
+	BRank.RankAmount = 6;
 
 	CRank.MoneyToGive = 70;
 	CRank.RankAmount = 4;
