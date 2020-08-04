@@ -21,6 +21,12 @@ public:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	class UBoxComponent* BoxCollison;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
+	class ATrashCounter* TrashCounter;
+
+	/* Gets all actors in the trash can */
+	FORCEINLINE TArray<AActor*> GetActorsInTrash() { return ActorsInCan; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
