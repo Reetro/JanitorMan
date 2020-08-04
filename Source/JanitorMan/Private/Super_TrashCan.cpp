@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "LevelState.h"
+#include "TrashCounter.h"
 
 // Sets default values
 ASuper_TrashCan::ASuper_TrashCan()
@@ -57,6 +58,10 @@ void ASuper_TrashCan::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 		ActorsInCan.Add(OtherActor);
 
 		LevelState->AddToTrashCount();
+
+		if (!ensure(TrashCounter != nullptr)) { return; }
+
+		TrashCounter->AreAllActorsInTrash();
 	}
 }
 
