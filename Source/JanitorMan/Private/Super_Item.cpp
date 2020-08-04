@@ -31,10 +31,14 @@ void ASuper_Item::BeginPlay()
 
 void ASuper_Item::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	auto Player = Cast<AJanitorManCharacter>(OtherActor);
-	
-	if (Player)
+	if (CanBeUsed)
 	{
-		Player->SetCurrentItem(this);
+		auto Player = Cast<AJanitorManCharacter>(OtherActor);
+
+		if (Player)
+		{
+			CanBeUsed = false;
+			Player->SetCurrentItem(this);
+		}
 	}
 }

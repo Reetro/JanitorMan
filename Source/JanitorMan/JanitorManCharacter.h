@@ -33,7 +33,7 @@ private:
 
 	void AttachItem(AActor* Actor);
 
-	void DettachItem(AActor* Actor, FVector NewLocation);
+	void DetachItem(AActor* Actor, FTransform NewItemTransform);
 
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
@@ -48,7 +48,7 @@ public:
 
 	void SetCurrentItem(ASuper_Item* Item);
 
-	void RemoveItem(ASuper_Item* Item, FVector NewItemLocation);
+	void RemoveItem(ASuper_Item* Item, FTransform NewItemTransform);
 
 protected:
 	/** Handles moving forward/backward */

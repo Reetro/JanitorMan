@@ -17,7 +17,9 @@ void UItemSpawner::OnHitActor(AActor* Actor)
 {
 	if (Player->GetCurrentItem())
 	{
-		Player->RemoveItem(Player->GetCurrentItem(), Actor->GetActorLocation());
+		FTransform NewTransform = FTransform(FRotator(0), Actor->GetActorLocation(), FVector(0.7));
+
+		Player->RemoveItem(Player->GetCurrentItem(), NewTransform);
 
 		Actor->Destroy();
 	}

@@ -26,6 +26,9 @@ public:
 
 	bool CanBeUsed;
 
+	FORCEINLINE UBoxComponent* GetCollisionBox() { return BoxCollison; }
+	FORCEINLINE UStaticMeshComponent* GetMesh() { return ItemMesh; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

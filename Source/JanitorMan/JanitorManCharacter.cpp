@@ -114,12 +114,12 @@ void AJanitorManCharacter::SetCurrentItem(ASuper_Item* Item)
 	AttachItem(Cast<AActor>(Item));
 }
 
-void AJanitorManCharacter::RemoveItem(ASuper_Item* Item, FVector NewItemLocation)
+void AJanitorManCharacter::RemoveItem(ASuper_Item* Item, FTransform NewItemTransform)
 {
 	if (!ensure(Item != nullptr)) { return; }
 
 	auto Actor = Cast<AActor>(Item);
-	DettachItem(Actor, NewItemLocation);
+	DetachItem(Actor, NewItemTransform);
 }
 
 void AJanitorManCharacter::AttachItem(AActor* Actor)
@@ -129,13 +129,21 @@ void AJanitorManCharacter::AttachItem(AActor* Actor)
 	Actor->AttachToComponent(ItemAttachMesh, FAttachmentTransformRules::KeepRelativeTransform, FName("Item Socket"));
 }
 
-void AJanitorManCharacter::DettachItem(AActor* Actor, FVector NewLocation)
+void AJanitorManCharacter::DetachItem(AActor* Actor, FTransform NewItemTransform)
 {
 	if (!ensure(Actor != nullptr)) { return; }
 
 	Actor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 
-	Actor->SetActorLocation(NewLocation);
+	Actor->SetActorTransform(NewItemTransform);
+
+	auto Item = Cast<ASuper_Item>(Actor);
+
+	if (!ensure(Item != nullptr)) { return; }
+
+	Item->GetMesh()->SetCollisionObjectType(ECC_PhysicsBody);
+	Item->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	Item->GetMesh()->SetSimulatePhysics(true);
 
 	CurrentItem = nullptr;
 }
