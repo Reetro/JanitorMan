@@ -129,6 +129,8 @@ void ALevelState::LoadNextLevel()
 
 		Player->TeleportTo(NextLevelPoint, NextLevelRotation, true, true);
 
+		BeenRanked = false;
+
 		LevelIndex = FMath::Clamp(LevelIndex + 1, 0, LevelPoints.Num());
 	}
 
@@ -144,4 +146,11 @@ void ALevelState::OnLevelLoaded_Implementation()
 	PC->bShowMouseCursor = false;
 	PC->bEnableClickEvents = false;
 	PC->bEnableMouseOverEvents = false;
+}
+
+void ALevelState::ReloadLevel()
+{
+	OnLevelLoaded();
+
+	UGameplayStatics::OpenLevel(this, LevelFileName, false);
 }

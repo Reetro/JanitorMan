@@ -70,6 +70,10 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Level Settings")
 	float TimeRemaining;
 
+	// Name of the level file
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
+	FName LevelFileName;
+
 	UPROPERTY(BlueprintReadWrite)
 	FString CurrentRank;
 
@@ -77,6 +81,10 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	bool OnLastLevel;
+
+	// Reloads the current level the player is in
+	UFUNCTION(BlueprintCallable, Category = "Level Function")
+	void ReloadLevel();
 
 private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
