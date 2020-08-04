@@ -3,6 +3,8 @@
 
 #include "LevelState.h"
 #include "Kismet/GameplayStatics.h"
+#include "../JanitorManCharacter.h"
+#include "Super_LevelPoint.h"
 
 // Sets default values
 ALevelState::ALevelState()
@@ -25,6 +27,7 @@ void ALevelState::BeginPlay()
 
 	CurrentTrashCount = 0;
 	BeenRanked = false;
+	LevelIndex = 0;
 }
 
 void ALevelState::StartTimer()
@@ -67,6 +70,16 @@ void ALevelState::OnLevelDone_Implementation()
 	CurrentRank = GetRank();
 
 	BeenRanked = true;
+
+	OnLastLevel = LevelIndex >= LevelPoints.Num();
+
+	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+
+	if (!ensure(PC != nullptr)) { return; }
+
+	PC->bShowMouseCursor = true;
+	PC->bEnableClickEvents = true;
+	PC->bEnableMouseOverEvents = true;
 }
 
 FString ALevelState::GetRank()
@@ -96,4 +109,48 @@ FString ALevelState::GetRank()
 		UE_LOG(LogTemp, Error, TEXT("Failed to give player a rank"))
 		return "Unable to get rank";
 	}
+}
+
+void ALevelState::LoadNextLevel()
+{
+	AJanitorManCharacter* Player = Cast<AJanitorManCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+	if (!ensure(Player != nullptr)) { return; }
+	
+	if (Player->GetCurrentItem())
+	{
+		Player->RemoveItem(Player->GetCurrentItem(), Player->GetActorTransform());
+	}
+
+	if (!OnLastLevel)
+	{
+		FVector NextLevelPoint = LevelPoints[LevelIndex]->GetActorLocation();
+		FRotator NextLevelRotation = LevelPoints[LevelIndex]->GetActorRotation();
+
+		Player->TeleportTo(NextLevelPoint, NextLevelRotation, true, true);
+
+		BeenRanked = false;
+
+		LevelIndex = FMath::Clamp(LevelIndex + 1, 0, LevelPoints.Num());
+	}
+
+	OnLevelLoaded();
+}
+
+void ALevelState::OnLevelLoaded_Implementation()
+{
+	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+
+	if (!ensure(PC != nullptr)) { return; }
+
+	PC->bShowMouseCursor = false;
+	PC->bEnableClickEvents = false;
+	PC->bEnableMouseOverEvents = false;
+}
+
+void ALevelState::ReloadLevel()
+{
+	OnLevelLoaded();
+
+	UGameplayStatics::OpenLevel(this, LevelFileName, false);
 }
