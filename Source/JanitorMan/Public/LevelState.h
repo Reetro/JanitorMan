@@ -7,6 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "LevelState.generated.h"
 
+class ASuper_LevelPoint;
+
 UCLASS()
 class JANITORMAN_API ALevelState : public AActor
 {
@@ -32,9 +34,22 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Level Events")
 	void OnTimerTick();
 
+	// Teleports player to the next level index
+	UFUNCTION(BlueprintCallable, Category = "Level Function")
+	void LoadNextLevel();
+
+	// Called after player is teleport ed to new level
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Level Function")
+	void OnLevelLoaded();
+	void OnLevelLoaded_Implementation();
+
 	// How long the level lasts for
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
 	float LevelTime = 60.0f;
+
+	// Where to teleport the player when a level is completed
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
+	TArray<ASuper_LevelPoint*> LevelPoints;
 
 	// Trash need to get S rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
@@ -60,6 +75,9 @@ public:
 
 	void AddToTrashCount();
 
+	UPROPERTY(BlueprintReadOnly)
+	bool OnLastLevel;
+
 private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 CurrentTrashCount = 0;
@@ -67,6 +85,8 @@ private:
 	float TimeLeft;
 	float TimerDeltaTick;
 	bool BeenRanked;
+
+	int32 LevelIndex;
 
 	FString GetRank();
 
