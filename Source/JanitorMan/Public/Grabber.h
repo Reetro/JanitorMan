@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "Grabber.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHitPawn, AActor*, Actor);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class JANITORMAN_API UGrabber : public UActorComponent
@@ -36,6 +37,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Settings")
 	bool DebugPickup = false;
 
+	FHitPawn OnHitPawn;
+
 private:
 
 	class UPhysicsHandleComponent* PhysicsHandle = nullptr;
@@ -52,4 +55,6 @@ private:
 
 	void GrabPressed();
 	void GrabReleesed();
+
+	class UItemSpawner* ItemSpawner;
 };

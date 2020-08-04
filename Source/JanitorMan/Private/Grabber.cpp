@@ -4,8 +4,8 @@
 #include "Grabber.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Components/InputComponent.h"
+#include "ItemSpawner.h"
 #include <Runtime\Engine\Public\DrawDebugHelpers.h>
-
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -25,6 +25,12 @@ void UGrabber::BeginPlay()
 
 	/// Look for attached physics handler
 	FindAttachedPhysicsComponent();
+
+	ItemSpawner = GetOwner()->FindComponentByClass<UItemSpawner>();
+
+	if (!ensure(ItemSpawner != nullptr)) { return; }
+
+	OnHitPawn.AddDynamic(ItemSpawner, &UItemSpawner::OnHitActor);
 }
 
 // Called every frame
@@ -50,11 +56,11 @@ void UGrabber::Grab()
 	auto PawnHitResult = GetFirstPawnInReach();
 	auto PawnHit = PawnHitResult.GetActor();
 
-	/// If we hit something then attach a physics handle
 	if (PawnHit)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Test"))
+		OnHitPawn.Broadcast(PawnHit);
 	}
+	/// If we hit something then attach a physics handle
 	else if (PhysicsHandle)
 	{
 		if (ActorHit)

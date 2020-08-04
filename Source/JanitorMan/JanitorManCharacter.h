@@ -22,8 +22,18 @@ class AJanitorManCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UPhysicsHandleComponent* PhysicsHandle;
 
-public:
-	AJanitorManCharacter();
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UItemSpawner* ItemSpawner;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class UStaticMeshComponent* ItemAttachMesh;
+
+private:
+	class ASuper_Item* CurrentItem;
+
+	void AttachItem(AActor* Actor);
+
+	void DettachItem(AActor* Actor, FVector NewLocation);
 
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
@@ -33,6 +43,12 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
+
+	AJanitorManCharacter();
+
+	void SetCurrentItem(ASuper_Item* Item);
+
+	void RemoveItem(ASuper_Item* Item, FVector NewItemLocation);
 
 protected:
 	/** Handles moving forward/backward */
@@ -64,4 +80,6 @@ protected:
 public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
+	/** Returns The item the player is currently carrying **/
+	FORCEINLINE class ASuper_Item* GetCurrentItem() const { return CurrentItem; }
 };

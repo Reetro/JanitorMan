@@ -10,6 +10,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.h"
+#include "ItemSpawner.h"
+#include "Super_Item.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogFPChar, Warning, All);
 
@@ -31,8 +33,14 @@ AJanitorManCharacter::AJanitorManCharacter()
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-39.56f, 1.75f, 64.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
+	ItemAttachMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Item Attach Mesh"));
+	ItemAttachMesh->SetupAttachment(FirstPersonCameraComponent);
+	ItemAttachMesh->SetHiddenInGame(true);
+	ItemAttachMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("Physics Handel"));
 	Grabber = CreateDefaultSubobject<UGrabber>(TEXT("Grabber"));
+	ItemSpawner = CreateDefaultSubobject<UItemSpawner>(TEXT("Item Spawner"));
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -88,4 +96,46 @@ void AJanitorManCharacter::LookUpAtRate(float Rate)
 {
 	// calculate delta for this frame from the rate information
 	AddControllerPitchInput(Rate * BaseLookUpRate * GetWorld()->GetDeltaSeconds());
+}
+
+void AJanitorManCharacter::SetCurrentItem(ASuper_Item* Item)
+{
+	if (!ensure(Item != nullptr)) { return; }
+
+	if (!CurrentItem)
+	{
+		CurrentItem = Item;
+	}
+	else
+	{
+		return;
+	}
+
+	AttachItem(Cast<AActor>(Item));
+}
+
+void AJanitorManCharacter::RemoveItem(ASuper_Item* Item, FVector NewItemLocation)
+{
+	if (!ensure(Item != nullptr)) { return; }
+
+	auto Actor = Cast<AActor>(Item);
+	DettachItem(Actor, NewItemLocation);
+}
+
+void AJanitorManCharacter::AttachItem(AActor* Actor)
+{
+	if (!ensure(Actor != nullptr)) { return; }
+
+	Actor->AttachToComponent(ItemAttachMesh, FAttachmentTransformRules::KeepRelativeTransform, FName("Item Socket"));
+}
+
+void AJanitorManCharacter::DettachItem(AActor* Actor, FVector NewLocation)
+{
+	if (!ensure(Actor != nullptr)) { return; }
+
+	Actor->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+
+	Actor->SetActorLocation(NewLocation);
+
+	CurrentItem = nullptr;
 }
