@@ -71,6 +71,8 @@ void ALevelState::OnLevelDone_Implementation()
 
 	BeenRanked = true;
 
+	OnLastLevel = LevelIndex >= LevelPoints.Num();
+
 	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 
 	if (!ensure(PC != nullptr)) { return; }
@@ -120,17 +122,15 @@ void ALevelState::LoadNextLevel()
 		Player->RemoveItem(Player->GetCurrentItem(), Player->GetActorTransform());
 	}
 
-	OnLastLevel = LevelIndex >= LevelPoints.Num();
-
 	if (!OnLastLevel)
 	{
 		FVector NextLevelPoint = LevelPoints[LevelIndex]->GetActorLocation();
 		FRotator NextLevelRotation = LevelPoints[LevelIndex]->GetActorRotation();
 
 		Player->TeleportTo(NextLevelPoint, NextLevelRotation, true, true);
-	}
 
-	LevelIndex = FMath::Clamp(LevelIndex + 1, 0, LevelPoints.Num());
+		LevelIndex = FMath::Clamp(LevelIndex + 1, 0, LevelPoints.Num());
+	}
 
 	OnLevelLoaded();
 }
