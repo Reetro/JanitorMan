@@ -5,6 +5,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/BoxComponent.h"
 #include "../JanitorManCharacter.h"
+#include "Grabber.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -26,19 +27,32 @@ void ASuper_Item::BeginPlay()
 
 	BoxCollison->OnComponentBeginOverlap.AddDynamic(this, &ASuper_Item::OnOverlapBegin);
 
-	CanBeUsed = true;
+	Player = Cast<AJanitorManCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+	if (ensure(Player != nullptr)) { return; }
 }
 
 void ASuper_Item::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (CanBeUsed)
+	if (CanBeUsed && !Player->GetGrabber()->HoldingItem)
 	{
-		auto Player = Cast<AJanitorManCharacter>(OtherActor);
+		auto PlayerCharacter = Cast<AJanitorManCharacter>(OtherActor);
 
-		if (Player)
+		if (PlayerCharacter)
 		{
 			CanBeUsed = false;
-			Player->SetCurrentItem(this);
+			PlayerCharacter->SetCurrentItem(this);
 		}
 	}
+}
+
+void ASuper_Item::OnItemUsed_Implementation(AActor* HitActor)
+{
+	if (!ensure(HitActor != nullptr)) { return; }
+
+	FTransform NewTransform = FTransform(FRotator(0), HitActor->GetActorLocation(), FVector(0.7));
+
+	Player->RemoveItem(Player->GetCurrentItem(), NewTransform, false);
+
+	HitActor->Destroy();
 }

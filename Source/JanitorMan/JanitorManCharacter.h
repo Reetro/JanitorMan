@@ -33,7 +33,7 @@ private:
 
 	void AttachItem(AActor* Actor);
 
-	void DetachItem(AActor* Actor, FTransform NewItemTransform);
+	void DetachItem(AActor* Actor, FTransform NewItemTransform, bool Reset);
 
 public:
 	/** Base turn rate, in deg/sec. Other scaling may affect final turn rate. */
@@ -48,7 +48,7 @@ public:
 
 	void SetCurrentItem(ASuper_Item* Item);
 
-	void RemoveItem(ASuper_Item* Item, FTransform NewItemTransform);
+	void RemoveItem(ASuper_Item* Item, FTransform NewItemTransform, bool Reset);
 
 protected:
 	/** Handles moving forward/backward */
@@ -82,4 +82,6 @@ public:
 	FORCEINLINE class UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 	/** Returns The item the player is currently carrying **/
 	FORCEINLINE class ASuper_Item* GetCurrentItem() const { return CurrentItem; }
+	/* Gets the player Grabber component */
+	FORCEINLINE UGrabber* GetGrabber() const { return Grabber; }
 };

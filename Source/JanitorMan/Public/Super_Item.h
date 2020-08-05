@@ -24,6 +24,13 @@ public:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Item Events")
+	void OnItemUsed(AActor* HitActor);
+	void OnItemUsed_Implementation(AActor* HitActor);
+
+	UPROPERTY(BlueprintReadOnly)
+	class AJanitorManCharacter* Player;
+	UPROPERTY(BlueprintReadWrite)
 	bool CanBeUsed;
 
 	FORCEINLINE UBoxComponent* GetCollisionBox() { return BoxCollison; }
