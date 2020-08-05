@@ -83,5 +83,6 @@ public:
 	/** Returns The item the player is currently carrying **/
 	FORCEINLINE class ASuper_Item* GetCurrentItem() const { return CurrentItem; }
 	/* Gets the player Grabber component */
+	UFUNCTION(BlueprintCallable)
 	FORCEINLINE UGrabber* GetGrabber() const { return Grabber; }
 };

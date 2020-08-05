@@ -19,6 +19,8 @@ ASuper_Item::ASuper_Item()
 
 	BoxCollison = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Collision"));
 	BoxCollison->SetupAttachment(RootComponent);
+
+	SizeInHand = FVector(1);
 }
 
 void ASuper_Item::BeginPlay()
@@ -42,6 +44,7 @@ void ASuper_Item::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 		{
 			CanBeUsed = false;
 			PlayerCharacter->SetCurrentItem(this);
+			OnItemPickup();
 		}
 	}
 }
@@ -55,4 +58,20 @@ void ASuper_Item::OnItemUsed_Implementation(AActor* HitActor)
 	Player->RemoveItem(Player->GetCurrentItem(), NewTransform, false);
 
 	HitActor->Destroy();
+}
+
+void ASuper_Item::OnItemRemoved_Implementation(bool Reset)
+{
+	if (!Reset)
+	{
+		GetMesh()->SetCollisionObjectType(ECC_PhysicsBody);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		GetMesh()->SetSimulatePhysics(true);
+	}
+	else
+	{
+		CanBeUsed = true;
+
+		GetMesh()->SetSimulatePhysics(true);
+	}
 }

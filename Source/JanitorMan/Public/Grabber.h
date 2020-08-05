@@ -41,6 +41,11 @@ public:
 
 	bool HoldingItem;
 
+	UFUNCTION(BlueprintCallable, Category = "Input Functions")
+	void GrabPressed();
+	UFUNCTION(BlueprintCallable, Category = "Input Functions")
+	void GrabReleesed();
+
 private:
 
 	class UPhysicsHandleComponent* PhysicsHandle = nullptr;
@@ -54,9 +59,6 @@ private:
 
 	FVector GetReachLineStart();
 	FVector GetReachLineEnd();
-
-	void GrabPressed();
-	void GrabReleesed();
 
 	class UItemSpawner* ItemSpawner;
 	class AJanitorManCharacter* Player;

@@ -137,6 +137,8 @@ void AJanitorManCharacter::AttachItem(AActor* Actor)
 	Item->SetActorTransform(NewTransform);
 
 	Item->AttachToComponent(ItemAttachMesh, FAttachmentTransformRules::KeepRelativeTransform, FName("Item Socket"));
+
+	Item->SetActorRelativeScale3D(Item->SizeInHand);
 }
 
 void AJanitorManCharacter::DetachItem(AActor* Actor, FTransform NewItemTransform, bool Reset)
@@ -151,20 +153,7 @@ void AJanitorManCharacter::DetachItem(AActor* Actor, FTransform NewItemTransform
 
 	if (!ensure(Item != nullptr)) { return; }
 
-	if (!Reset)
-	{
-		Item->GetMesh()->SetCollisionObjectType(ECC_PhysicsBody);
-		Item->GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		Item->GetMesh()->SetSimulatePhysics(true);
+	Item->OnItemRemoved(Reset);
 
-		CurrentItem = nullptr;
-	}
-	else
-	{
-		Item->CanBeUsed = true;
-
-		Item->GetMesh()->SetSimulatePhysics(true);
-
-		CurrentItem = nullptr;
-	}
+	CurrentItem = nullptr;
 }

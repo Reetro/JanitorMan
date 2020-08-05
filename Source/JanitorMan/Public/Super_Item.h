@@ -21,12 +21,22 @@ public:
 	// Sets default values for this actor's properties
 	ASuper_Item();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
+	FVector SizeInHand;
+
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Item Events")
 	void OnItemUsed(AActor* HitActor);
 	void OnItemUsed_Implementation(AActor* HitActor);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Item Events")
+	void OnItemPickup();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Item Events")
+	void OnItemRemoved(bool Reset);
+	void OnItemRemoved_Implementation(bool Reset);
 
 	UPROPERTY(BlueprintReadOnly)
 	class AJanitorManCharacter* Player;
