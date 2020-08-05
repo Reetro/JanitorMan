@@ -119,7 +119,7 @@ void ALevelState::LoadNextLevel()
 	
 	if (Player->GetCurrentItem())
 	{
-		Player->RemoveItem(Player->GetCurrentItem(), Player->GetActorTransform());
+		Player->RemoveItem(Player->GetCurrentItem(), Player->GetActorTransform(), true);
 	}
 
 	if (!OnLastLevel)

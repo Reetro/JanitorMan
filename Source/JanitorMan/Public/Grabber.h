@@ -39,6 +39,8 @@ public:
 
 	FHitPawn OnHitPawn;
 
+	bool HoldingItem;
+
 private:
 
 	class UPhysicsHandleComponent* PhysicsHandle = nullptr;
@@ -57,4 +59,5 @@ private:
 	void GrabReleesed();
 
 	class UItemSpawner* ItemSpawner;
+	class AJanitorManCharacter* Player;
 };

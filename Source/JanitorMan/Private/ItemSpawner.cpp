@@ -3,6 +3,7 @@
 
 #include "ItemSpawner.h"
 #include "Grabber.h"
+#include "Super_Item.h"
 #include "../JanitorManCharacter.h"
 
 // Sets default values for this component's properties
@@ -17,11 +18,7 @@ void UItemSpawner::OnHitActor(AActor* Actor)
 {
 	if (Player->GetCurrentItem())
 	{
-		FTransform NewTransform = FTransform(FRotator(0), Actor->GetActorLocation(), FVector(0.7));
-
-		Player->RemoveItem(Player->GetCurrentItem(), NewTransform);
-
-		Actor->Destroy();
+		Player->GetCurrentItem()->OnItemUsed(Actor);
 	}
 }
 

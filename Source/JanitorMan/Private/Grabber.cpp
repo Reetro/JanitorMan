@@ -5,6 +5,8 @@
 #include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Components/InputComponent.h"
 #include "ItemSpawner.h"
+#include "Kismet/GameplayStatics.h"
+#include "../JanitorManCharacter.h"
 #include <Runtime\Engine\Public\DrawDebugHelpers.h>
 
 // Sets default values for this component's properties
@@ -31,6 +33,12 @@ void UGrabber::BeginPlay()
 	if (!ensure(ItemSpawner != nullptr)) { return; }
 
 	OnHitPawn.AddDynamic(ItemSpawner, &UItemSpawner::OnHitActor);
+
+	Player = Cast<AJanitorManCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
+
+	if (!ensure(Player != nullptr)) { return; }
+
+	HoldingItem = false;
 }
 
 // Called every frame
@@ -65,8 +73,17 @@ void UGrabber::Grab()
 	{
 		if (ActorHit)
 		{
+			if (Player->GetCurrentItem())
+			{
+				FTransform NewTransform = FTransform(FRotator(0), PhysicsHandle->GetOwner()->GetActorLocation(), FVector(0.7));
+
+				Player->RemoveItem(Player->GetCurrentItem(), NewTransform, true);
+			}
+
 			// attach physics handle
 			PhysicsHandle->GrabComponentAtLocationWithRotation(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation(), ComponentToGrab->GetOwner()->GetActorRotation());
+
+			HoldingItem = true;
 		}
 	}
 }
@@ -75,6 +92,8 @@ void UGrabber::Released()
 {
 	if (!PhysicsHandle) { return; }
 	PhysicsHandle->ReleaseComponent();
+
+	if (HoldingItem) { HoldingItem = false; }
 }
 
 void UGrabber::FindAttachedPhysicsComponent()
