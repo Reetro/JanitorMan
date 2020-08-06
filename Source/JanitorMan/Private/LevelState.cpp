@@ -14,11 +14,11 @@ ALevelState::ALevelState()
 
 	TimerDeltaTick = 0.1f;
 
-	SRankRequirement = 10;
-	ARankRequirement = 8;
-	BRankRequirement = 6;
-	CRankRequirement = 4;
-	FRankRequirement = 2;
+	SRank.Requirement = 10;
+	ARank.Requirement = 8;
+	BRank.Requirement = 6;
+	CRank.Requirement = 4;
+	FRank.Requirement = 2;
 }
 
 void ALevelState::BeginPlay()
@@ -84,23 +84,23 @@ void ALevelState::OnLevelDone_Implementation()
 
 FString ALevelState::GetRank()
 {
-	if (CurrentTrashCount >= SRankRequirement)
+	if (CurrentTrashCount >= SRank.Requirement)
 	{
 		return "S";
 	}
-	else if (CurrentTrashCount >= ARankRequirement)
+	else if (CurrentTrashCount >= ARank.Requirement)
 	{
 		return "A";
 	}
-	else if (CurrentTrashCount >= BRankRequirement)
+	else if (CurrentTrashCount >= BRank.Requirement)
 	{
 		return "B";
 	}
-	else if (CurrentTrashCount >= CRankRequirement)
+	else if (CurrentTrashCount >= CRank.Requirement)
 	{
 		return "C";
 	}
-	else if (CurrentTrashCount >= FRankRequirement || CurrentTrashCount <= FRankRequirement)
+	else if (CurrentTrashCount >= FRank.Requirement || CurrentTrashCount <= FRank.Requirement)
 	{
 		return "F";
 	}

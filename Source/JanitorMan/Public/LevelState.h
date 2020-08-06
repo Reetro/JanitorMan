@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "RankDetails.h"
 #include "GameFramework/Actor.h"
+#include "RankDetails.h"
 #include "LevelState.generated.h"
 
 class ASuper_LevelPoint;
@@ -53,19 +54,19 @@ public:
 
 	// Trash need to get S rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	int32 SRankRequirement;
+	FRankDetails SRank;
 	// Trash need to get A rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	int32 ARankRequirement;
+	FRankDetails ARank;
 	// Trash need to get B rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	int32 BRankRequirement;
+	FRankDetails BRank;
 	// Trash need to get C rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	int32 CRankRequirement;
+	FRankDetails CRank;
 	// Trash need to get F rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
-	int32 FRankRequirement;
+	FRankDetails FRank;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Level Settings")
 	float TimeRemaining;
