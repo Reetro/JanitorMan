@@ -37,6 +37,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Settings")
 	bool DebugPickup = false;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Settings")
+	float MaxCarryWeight;
+
 	FHitPawn OnHitPawn;
 
 	bool HoldingItem;
@@ -59,6 +62,7 @@ private:
 
 	FVector GetReachLineStart();
 	FVector GetReachLineEnd();
+	float GetActorMass(AActor* Actor);
 
 	class UItemSpawner* ItemSpawner;
 	class AJanitorManCharacter* Player;

@@ -15,6 +15,8 @@ UGrabber::UGrabber()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
+
+	MaxCarryWeight = 400;
 }
 
 // Called when the game starts
@@ -73,17 +75,22 @@ void UGrabber::Grab()
 	{
 		if (ActorHit)
 		{
-			if (Player->GetCurrentItem())
+			auto ActorMass = GetActorMass(ActorHit);
+
+			if (ActorMass <= MaxCarryWeight)
 			{
-				FTransform NewTransform = FTransform(FRotator(0), PhysicsHandle->GetOwner()->GetActorLocation(), FVector(0.7));
+				if (Player->GetCurrentItem())
+				{
+					FTransform NewTransform = FTransform(FRotator(0), PhysicsHandle->GetOwner()->GetActorLocation(), FVector(0.7));
 
-				Player->RemoveItem(Player->GetCurrentItem(), NewTransform, true);
+					Player->RemoveItem(Player->GetCurrentItem(), NewTransform, true);
+				}
+
+				// attach physics handle
+				PhysicsHandle->GrabComponentAtLocationWithRotation(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation(), ComponentToGrab->GetOwner()->GetActorRotation());
+
+				HoldingItem = true;
 			}
-
-			// attach physics handle
-			PhysicsHandle->GrabComponentAtLocationWithRotation(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation(), ComponentToGrab->GetOwner()->GetActorRotation());
-
-			HoldingItem = true;
 		}
 	}
 }
@@ -179,6 +186,27 @@ FVector UGrabber::GetReachLineEnd()
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
 
 	return PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
+}
+
+float UGrabber::GetActorMass(AActor* Actor)
+{
+	if (!ensure(Actor != nullptr)) { return 0; }
+
+	float ActorMass = 0;
+	TArray<UPrimitiveComponent*> Comps;
+	Actor->GetComponents(Comps);
+
+	for (auto Iter = Comps.CreateConstIterator(); Iter; ++Iter)
+	{
+		UPrimitiveComponent* comp = Cast<UPrimitiveComponent>(*Iter);
+
+		if (comp)
+		{
+			ActorMass = comp->GetMass();
+			break;
+		}
+	}
+	return ActorMass;
 }
 
 void UGrabber::GrabPressed()
