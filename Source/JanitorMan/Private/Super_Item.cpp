@@ -21,6 +21,7 @@ ASuper_Item::ASuper_Item()
 	BoxCollison->SetupAttachment(RootComponent);
 
 	SizeInHand = FVector(1);
+	SocketName = "Item Socket";
 }
 
 void ASuper_Item::BeginPlay()
@@ -36,12 +37,27 @@ void ASuper_Item::BeginPlay()
 
 void ASuper_Item::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (CanBeUsed && !Player->GetGrabber()->HoldingItem)
-	{
-		auto PlayerCharacter = Cast<AJanitorManCharacter>(OtherActor);
+	auto PlayerCharacter = Cast<AJanitorManCharacter>(OtherActor);
 
-		if (PlayerCharacter)
+	if (PlayerCharacter)
+	{
+		if (CanBeUsed)
 		{
+			if (PlayerCharacter->GetCurrentItem())
+			{
+				PlayerCharacter->GetCurrentItem()->GetCollisionBox()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+
+				FTransform NewTransform = FTransform(FRotator(0), PlayerCharacter->GetActorLocation(), FVector(1));
+
+				ItemToDelay = PlayerCharacter->GetCurrentItem();
+
+				FTimerHandle TimerDelay;
+
+				GetWorldTimerManager().SetTimer(TimerDelay, this, &ASuper_Item::UseDelay, 1, false);
+
+				Player->RemoveItem(Player->GetCurrentItem(), NewTransform, true);
+			}
+
 			CanBeUsed = false;
 			PlayerCharacter->SetCurrentItem(this);
 			OnItemPickup();
@@ -53,7 +69,7 @@ void ASuper_Item::OnItemUsed_Implementation(AActor* HitActor)
 {
 	if (!ensure(HitActor != nullptr)) { return; }
 
-	FTransform NewTransform = FTransform(FRotator(0), HitActor->GetActorLocation(), FVector(0.7));
+	FTransform NewTransform = FTransform(FRotator(0), HitActor->GetActorLocation(), FVector(1));
 
 	Player->RemoveItem(Player->GetCurrentItem(), NewTransform, false);
 
@@ -74,4 +90,24 @@ void ASuper_Item::OnItemRemoved_Implementation(bool Reset)
 
 		GetMesh()->SetSimulatePhysics(true);
 	}
+}
+
+void ASuper_Item::OnItemAttached_Implementation(class AJanitorManCharacter* PlayerRef)
+{
+	if (!ensure(PlayerRef != nullptr)) { return; }
+
+	GetMesh()->SetSimulatePhysics(false);
+
+	FTransform NewTransform = FTransform(FRotator(0), FVector(0), FVector(1));
+
+	SetActorTransform(NewTransform);
+
+	AttachToComponent(PlayerRef->GetItemAttachMesh(), FAttachmentTransformRules::KeepRelativeTransform, SocketName);
+
+	SetActorRelativeScale3D(SizeInHand);
+}
+
+void ASuper_Item::UseDelay()
+{
+	ItemToDelay->GetCollisionBox()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 }

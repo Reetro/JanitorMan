@@ -85,4 +85,6 @@ public:
 	/* Gets the player Grabber component */
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE UGrabber* GetGrabber() const { return Grabber; }
+	/* Gets the mesh items attaches to */
+	FORCEINLINE UStaticMeshComponent* GetItemAttachMesh() { return ItemAttachMesh; }
 };

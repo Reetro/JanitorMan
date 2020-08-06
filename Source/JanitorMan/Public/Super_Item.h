@@ -24,6 +24,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
 	FVector SizeInHand;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
+	FName SocketName;
+
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -38,6 +41,10 @@ public:
 	void OnItemRemoved(bool Reset);
 	void OnItemRemoved_Implementation(bool Reset);
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Item Events")
+	void OnItemAttached(class AJanitorManCharacter* PlayerRef);
+	void OnItemAttached_Implementation(class AJanitorManCharacter* PlayerRef);
+
 	UPROPERTY(BlueprintReadOnly)
 	class AJanitorManCharacter* Player;
 	UPROPERTY(BlueprintReadWrite)
@@ -45,6 +52,11 @@ public:
 
 	FORCEINLINE UBoxComponent* GetCollisionBox() { return BoxCollison; }
 	FORCEINLINE UStaticMeshComponent* GetMesh() { return ItemMesh; }
+
+	void UseDelay();
+
+private:
+	ASuper_Item* ItemToDelay;
 
 protected:
 	// Called when the game starts or when spawned

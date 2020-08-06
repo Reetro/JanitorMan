@@ -130,15 +130,7 @@ void AJanitorManCharacter::AttachItem(AActor* Actor)
 
 	if (!ensure(Item != nullptr)) { return; }
 
-	Item->GetMesh()->SetSimulatePhysics(false);
-
-	FTransform NewTransform = FTransform(FRotator(0),FVector(0), FVector(1));
-
-	Item->SetActorTransform(NewTransform);
-
-	Item->AttachToComponent(ItemAttachMesh, FAttachmentTransformRules::KeepRelativeTransform, FName("Item Socket"));
-
-	Item->SetActorRelativeScale3D(Item->SizeInHand);
+	Item->OnItemAttached(this);
 }
 
 void AJanitorManCharacter::DetachItem(AActor* Actor, FTransform NewItemTransform, bool Reset)
