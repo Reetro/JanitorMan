@@ -42,6 +42,7 @@ public:
 
 	FHitPawn OnHitPawn;
 
+	UPROPERTY(BlueprintReadOnly)
 	bool HoldingItem;
 
 	UFUNCTION(BlueprintCallable, Category = "Input Functions")
