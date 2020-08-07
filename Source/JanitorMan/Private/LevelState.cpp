@@ -4,6 +4,7 @@
 #include "LevelState.h"
 #include "Kismet/GameplayStatics.h"
 #include "../JanitorManCharacter.h"
+#include "PlayerSaveGame.h"
 #include "Super_LevelPoint.h"
 
 // Sets default values
@@ -25,9 +26,19 @@ void ALevelState::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentTrashCount = 0;
-	BeenRanked = false;
-	LevelIndex = 0;
+	if (UGameplayStatics::DoesSaveGameExist("TempSlot", 0))
+	{
+		CurrentTrashCount = 0;
+		BeenRanked = false;
+
+		LoadGame();
+	}
+	else
+	{
+		CurrentTrashCount = 0;
+		BeenRanked = false;
+		LevelIndex = 0;
+	}
 }
 
 void ALevelState::StartTimer()
@@ -111,6 +122,65 @@ FString ALevelState::GetRank()
 	}
 }
 
+FName ALevelState::GetRankLevel()
+{
+	if (CurrentRank.Contains("S"))
+	{
+		return SRank.RankLevel;
+	}
+	else if (CurrentRank.Contains("A"))
+	{
+		return ARank.RankLevel;
+	}
+	else if (CurrentRank.Contains("B"))
+	{
+		return BRank.RankLevel;
+	}
+	else if (CurrentRank.Contains("C"))
+	{
+		return CRank.RankLevel;
+	}
+	else if (CurrentRank.Contains("F"))
+	{
+		return FRank.RankLevel;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to get rank level"))
+		return "Unable to get rank level";
+	}
+}
+
+void ALevelState::SaveGame()
+{
+	UPlayerSaveGame* SaveGameInstance = Cast<UPlayerSaveGame>(UGameplayStatics::CreateSaveGameObject(UPlayerSaveGame::StaticClass()));
+
+	if (!ensure(SaveGameInstance != nullptr)) { return; }
+	
+	SaveGameInstance->TimeRemaining = TimeRemaining;
+	SaveGameInstance->TrashCount = CurrentTrashCount;
+	SaveGameInstance->LevelIndex = LevelIndex;
+	SaveGameInstance->CurrentRank = CurrentRank;
+	SaveGameInstance->OnLastLevel = OnLastLevel;
+
+	UGameplayStatics::SaveGameToSlot(SaveGameInstance, "TempSlot", 0);
+}
+
+void ALevelState::LoadGame()
+{
+	UPlayerSaveGame* SaveGameInstance = Cast<UPlayerSaveGame>(UGameplayStatics::CreateSaveGameObject(UPlayerSaveGame::StaticClass()));
+
+	if (!ensure(SaveGameInstance != nullptr)) { return; }
+
+	SaveGameInstance = Cast<UPlayerSaveGame>(UGameplayStatics::LoadGameFromSlot("TempSlot", 0));
+
+	if (!ensure(SaveGameInstance != nullptr)) { return; }
+
+	LevelIndex = SaveGameInstance->LevelIndex;
+
+	LoadNextLevel();
+}
+
 void ALevelState::LoadNextLevel()
 {
 	AJanitorManCharacter* Player = Cast<AJanitorManCharacter>(UGameplayStatics::GetPlayerCharacter(this, 0));
@@ -137,7 +207,7 @@ void ALevelState::LoadNextLevel()
 	OnLevelLoaded();
 }
 
-void ALevelState::OnLevelLoaded_Implementation()
+void ALevelState::OnLevelLoaded()
 {
 	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 
@@ -151,6 +221,8 @@ void ALevelState::OnLevelLoaded_Implementation()
 void ALevelState::ReloadLevel()
 {
 	OnLevelLoaded();
+
+	UGameplayStatics::DeleteGameInSlot("TempSlot", 0);
 
 	UGameplayStatics::OpenLevel(this, LevelFileName, false);
 }

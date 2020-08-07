@@ -13,7 +13,7 @@ struct FRankDetails
 public:
 	// Level to send player to
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	FString RankLevel;
+	FName RankLevel;
 	// Amount of trash needed to get this rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
 	int32 Requirement;

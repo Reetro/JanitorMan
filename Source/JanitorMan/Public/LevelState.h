@@ -40,9 +40,7 @@ public:
 	void LoadNextLevel();
 
 	// Called after player is teleport ed to new level
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Level Function")
 	void OnLevelLoaded();
-	void OnLevelLoaded_Implementation();
 
 	// How long the level lasts for
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
@@ -87,6 +85,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Level Function")
 	void ReloadLevel();
 
+	UFUNCTION(BlueprintCallable, Category = "Level Function")
+	void SaveGame();
+
+	UFUNCTION(BlueprintPure, Category = "Level Function")
+	FName GetRankLevel();
+
+	void LoadGame();
+
 private:
 	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	int32 CurrentTrashCount = 0;
@@ -100,7 +106,6 @@ private:
 	FString GetRank();
 
 	FTimerHandle LevelTimerHandel;
-
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 };
