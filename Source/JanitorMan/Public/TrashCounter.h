@@ -21,6 +21,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
 	class ASuper_TrashCan* TrashCan;
 
+	UPROPERTY(BlueprintReadOnly)
+	int32 TrashCount;
+
 	void AreAllActorsInTrash();
 
 protected:

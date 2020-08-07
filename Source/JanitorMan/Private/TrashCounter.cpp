@@ -45,7 +45,7 @@ void ATrashCounter::AreAllActorsInTrash()
 
 	BoxCollison->GetOverlappingActors(ActorsInLevel);
 
-	int32 TrashCount = 0;
+	TrashCount = 0;
 
 	for (AActor* Actor : ActorsInLevel)
 	{
