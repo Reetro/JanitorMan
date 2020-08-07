@@ -66,6 +66,9 @@ public:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
 	FRankDetails FRank;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Level Settings")
+	float TimeDivider;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Level Settings")
 	float TimeRemaining;
 

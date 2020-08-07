@@ -15,6 +15,7 @@ ALevelState::ALevelState()
 
 	TimerDeltaTick = 0.1f;
 	MinRankToWinOnLevel1 = "C";
+	TimeDivider = 2;
 
 	SRank.Requirement = 10;
 	ARank.Requirement = 8;
@@ -46,9 +47,18 @@ void ALevelState::BeginPlay()
 
 void ALevelState::StartTimer()
 {
-	TimeRemaining = LevelTime;
+	if (!OnLevelOne)
+	{
+		TimeRemaining = LevelTime / TimeDivider;
 
-	GetWorldTimerManager().SetTimer(LevelTimerHandel, this, &ALevelState::RefreshTimer, TimerDeltaTick, true);
+		GetWorldTimerManager().SetTimer(LevelTimerHandel, this, &ALevelState::RefreshTimer, TimerDeltaTick, true);
+	}
+	else
+	{
+		TimeRemaining = LevelTime;
+
+		GetWorldTimerManager().SetTimer(LevelTimerHandel, this, &ALevelState::RefreshTimer, TimerDeltaTick, true);
+	}
 }
 
 void ALevelState::RefreshTimer()
