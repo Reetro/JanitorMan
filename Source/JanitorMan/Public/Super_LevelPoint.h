@@ -14,4 +14,7 @@ class JANITORMAN_API ASuper_LevelPoint : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ASuper_LevelPoint();
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Settings")
+	FString MinRankToWin;
 };

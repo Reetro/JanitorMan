@@ -27,6 +27,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	bool OnLastLevel;
 
+	UPROPERTY(BlueprintReadOnly)
+	bool WonLevel;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Settings")
 	FName MainGameLevel;
 
