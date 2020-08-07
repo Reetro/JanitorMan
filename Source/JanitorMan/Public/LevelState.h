@@ -80,6 +80,11 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	bool OnLastLevel;
+	UPROPERTY(BlueprintReadOnly)
+	bool WonLevel;
+
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Settings")
+	FString MinRankToWinOnLevel1;
 
 	// Reloads the current level the player is in
 	UFUNCTION(BlueprintCallable, Category = "Level Function")
@@ -100,10 +105,12 @@ private:
 	float TimeLeft;
 	float TimerDeltaTick;
 	bool BeenRanked;
+	bool OnLevelOne;
 
 	int32 LevelIndex;
 
 	FString GetRank();
+	bool PlayerWonLevelCheck();
 
 	FTimerHandle LevelTimerHandel;
 	// Called when the game starts or when spawned

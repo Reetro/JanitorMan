@@ -14,6 +14,7 @@ ALevelState::ALevelState()
 	PrimaryActorTick.bCanEverTick = false;
 
 	TimerDeltaTick = 0.1f;
+	MinRankToWinOnLevel1 = "C";
 
 	SRank.Requirement = 10;
 	ARank.Requirement = 8;
@@ -30,6 +31,7 @@ void ALevelState::BeginPlay()
 	{
 		CurrentTrashCount = 0;
 		BeenRanked = false;
+		OnLevelOne = false;
 
 		LoadGame();
 	}
@@ -38,6 +40,7 @@ void ALevelState::BeginPlay()
 		CurrentTrashCount = 0;
 		BeenRanked = false;
 		LevelIndex = 0;
+		OnLevelOne = true;
 	}
 }
 
@@ -79,6 +82,8 @@ void ALevelState::OnLevelDone_Implementation()
 	GetWorldTimerManager().ClearTimer(LevelTimerHandel);
 
 	CurrentRank = GetRank();
+
+	WonLevel = PlayerWonLevelCheck();
 
 	BeenRanked = true;
 
@@ -122,6 +127,76 @@ FString ALevelState::GetRank()
 	}
 }
 
+bool ALevelState::PlayerWonLevelCheck()
+{
+	if (OnLevelOne)
+	{
+		if (CurrentRank.Contains(MinRankToWinOnLevel1))
+		{
+			return true;
+		}
+		if (CurrentRank.Contains("S"))
+		{
+			return true;
+		}
+		else if (CurrentRank.Contains("A"))
+		{
+			return true;
+		}
+		else if (CurrentRank.Contains("B"))
+		{
+			return true;
+		}
+		else if (CurrentRank.Contains("C"))
+		{
+			return true;
+		}
+		else if (CurrentRank.Contains("F"))
+		{
+			return false;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		auto CurrentLevelPoint = LevelPoints[LevelIndex];
+
+		if (!ensure(CurrentLevelPoint != nullptr)) { return false; }
+
+		if (CurrentRank.Contains(CurrentLevelPoint->MinRankToWin))
+		{
+			return true;
+		}
+		if (CurrentRank.Contains("S"))
+		{
+			return true;
+		}
+		else if (CurrentRank.Contains("A"))
+		{
+			return true;
+		}
+		else if (CurrentRank.Contains("B"))
+		{
+			return true;
+		}
+		else if (CurrentRank.Contains("C"))
+		{
+			return true;
+		}
+		else if (CurrentRank.Contains("F"))
+		{
+			return false;
+		}
+		else
+		{
+			return false;
+		}
+	}
+}
+
 FName ALevelState::GetRankLevel()
 {
 	if (CurrentRank.Contains("S"))
@@ -162,6 +237,7 @@ void ALevelState::SaveGame()
 	SaveGameInstance->LevelIndex = LevelIndex;
 	SaveGameInstance->CurrentRank = CurrentRank;
 	SaveGameInstance->OnLastLevel = OnLastLevel;
+	SaveGameInstance->WonLevel = WonLevel;
 
 	UGameplayStatics::SaveGameToSlot(SaveGameInstance, "TempSlot", 0);
 }
@@ -216,6 +292,8 @@ void ALevelState::OnLevelLoaded()
 	PC->bShowMouseCursor = false;
 	PC->bEnableClickEvents = false;
 	PC->bEnableMouseOverEvents = false;
+
+	OnLevelOne = false;
 }
 
 void ALevelState::ReloadLevel()

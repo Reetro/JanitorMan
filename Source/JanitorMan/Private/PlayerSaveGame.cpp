@@ -11,4 +11,5 @@ UPlayerSaveGame::UPlayerSaveGame()
 	LevelIndex = 0;
 	OnLastLevel = false;
 	TrashCount = 0;
+	WonLevel = false;
 }

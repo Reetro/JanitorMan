@@ -28,4 +28,6 @@ public:
 	int32 TrashCount;
 	UPROPERTY(EditAnywhere)
 	bool OnLastLevel;
+	UPROPERTY(EditAnywhere)
+	bool WonLevel;
 };

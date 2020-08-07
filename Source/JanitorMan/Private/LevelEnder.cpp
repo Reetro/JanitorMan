@@ -16,6 +16,7 @@ ALevelEnder::ALevelEnder()
 	Rank = "";
 	TrashCount = 0;
 	OnLastLevel = false;
+	WonLevel = false;
 }
 
 void ALevelEnder::LoadGame()
@@ -33,4 +34,5 @@ void ALevelEnder::LoadGame()
 	TrashCount = SaveGameInstance->TrashCount;
 	OnLastLevel = SaveGameInstance->OnLastLevel;
 	TrashCount = SaveGameInstance->TrashCount;
+	WonLevel = SaveGameInstance->WonLevel;
 }
