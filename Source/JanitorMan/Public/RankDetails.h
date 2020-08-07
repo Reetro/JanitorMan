@@ -11,8 +11,10 @@ struct FRankDetails
 	GENERATED_BODY()
 
 public:
+	// Level to send player to
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	int32 MoneyToGive;
+	FName RankLevel;
+	// Amount of trash needed to get this rank
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	int32 RankAmount;
+	int32 Requirement;
 };

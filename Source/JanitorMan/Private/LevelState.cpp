@@ -4,6 +4,7 @@
 #include "LevelState.h"
 #include "Kismet/GameplayStatics.h"
 #include "../JanitorManCharacter.h"
+#include "PlayerSaveGame.h"
 #include "Super_LevelPoint.h"
 
 // Sets default values
@@ -14,20 +15,30 @@ ALevelState::ALevelState()
 
 	TimerDeltaTick = 0.1f;
 
-	SRankRequirement = 10;
-	ARankRequirement = 8;
-	BRankRequirement = 6;
-	CRankRequirement = 4;
-	FRankRequirement = 2;
+	SRank.Requirement = 10;
+	ARank.Requirement = 8;
+	BRank.Requirement = 6;
+	CRank.Requirement = 4;
+	FRank.Requirement = 2;
 }
 
 void ALevelState::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentTrashCount = 0;
-	BeenRanked = false;
-	LevelIndex = 0;
+	if (UGameplayStatics::DoesSaveGameExist("TempSlot", 0))
+	{
+		CurrentTrashCount = 0;
+		BeenRanked = false;
+
+		LoadGame();
+	}
+	else
+	{
+		CurrentTrashCount = 0;
+		BeenRanked = false;
+		LevelIndex = 0;
+	}
 }
 
 void ALevelState::StartTimer()
@@ -84,23 +95,23 @@ void ALevelState::OnLevelDone_Implementation()
 
 FString ALevelState::GetRank()
 {
-	if (CurrentTrashCount >= SRankRequirement)
+	if (CurrentTrashCount >= SRank.Requirement)
 	{
 		return "S";
 	}
-	else if (CurrentTrashCount >= ARankRequirement)
+	else if (CurrentTrashCount >= ARank.Requirement)
 	{
 		return "A";
 	}
-	else if (CurrentTrashCount >= BRankRequirement)
+	else if (CurrentTrashCount >= BRank.Requirement)
 	{
 		return "B";
 	}
-	else if (CurrentTrashCount >= CRankRequirement)
+	else if (CurrentTrashCount >= CRank.Requirement)
 	{
 		return "C";
 	}
-	else if (CurrentTrashCount >= FRankRequirement || CurrentTrashCount <= FRankRequirement)
+	else if (CurrentTrashCount >= FRank.Requirement || CurrentTrashCount <= FRank.Requirement)
 	{
 		return "F";
 	}
@@ -109,6 +120,65 @@ FString ALevelState::GetRank()
 		UE_LOG(LogTemp, Error, TEXT("Failed to give player a rank"))
 		return "Unable to get rank";
 	}
+}
+
+FName ALevelState::GetRankLevel()
+{
+	if (CurrentRank.Contains("S"))
+	{
+		return SRank.RankLevel;
+	}
+	else if (CurrentRank.Contains("A"))
+	{
+		return ARank.RankLevel;
+	}
+	else if (CurrentRank.Contains("B"))
+	{
+		return BRank.RankLevel;
+	}
+	else if (CurrentRank.Contains("C"))
+	{
+		return CRank.RankLevel;
+	}
+	else if (CurrentRank.Contains("F"))
+	{
+		return FRank.RankLevel;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to get rank level"))
+		return "Unable to get rank level";
+	}
+}
+
+void ALevelState::SaveGame()
+{
+	UPlayerSaveGame* SaveGameInstance = Cast<UPlayerSaveGame>(UGameplayStatics::CreateSaveGameObject(UPlayerSaveGame::StaticClass()));
+
+	if (!ensure(SaveGameInstance != nullptr)) { return; }
+	
+	SaveGameInstance->TimeRemaining = TimeRemaining;
+	SaveGameInstance->TrashCount = CurrentTrashCount;
+	SaveGameInstance->LevelIndex = LevelIndex;
+	SaveGameInstance->CurrentRank = CurrentRank;
+	SaveGameInstance->OnLastLevel = OnLastLevel;
+
+	UGameplayStatics::SaveGameToSlot(SaveGameInstance, "TempSlot", 0);
+}
+
+void ALevelState::LoadGame()
+{
+	UPlayerSaveGame* SaveGameInstance = Cast<UPlayerSaveGame>(UGameplayStatics::CreateSaveGameObject(UPlayerSaveGame::StaticClass()));
+
+	if (!ensure(SaveGameInstance != nullptr)) { return; }
+
+	SaveGameInstance = Cast<UPlayerSaveGame>(UGameplayStatics::LoadGameFromSlot("TempSlot", 0));
+
+	if (!ensure(SaveGameInstance != nullptr)) { return; }
+
+	LevelIndex = SaveGameInstance->LevelIndex;
+
+	LoadNextLevel();
 }
 
 void ALevelState::LoadNextLevel()
@@ -137,7 +207,7 @@ void ALevelState::LoadNextLevel()
 	OnLevelLoaded();
 }
 
-void ALevelState::OnLevelLoaded_Implementation()
+void ALevelState::OnLevelLoaded()
 {
 	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 
@@ -151,6 +221,8 @@ void ALevelState::OnLevelLoaded_Implementation()
 void ALevelState::ReloadLevel()
 {
 	OnLevelLoaded();
+
+	UGameplayStatics::DeleteGameInSlot("TempSlot", 0);
 
 	UGameplayStatics::OpenLevel(this, LevelFileName, false);
 }
