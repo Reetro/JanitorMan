@@ -81,13 +81,13 @@ void ALevelState::OnLevelDone_Implementation()
 {
 	GetWorldTimerManager().ClearTimer(LevelTimerHandel);
 
+	OnLastLevel = LevelIndex >= LevelPoints.Num();
+
 	CurrentRank = GetRank();
 
 	WonLevel = PlayerWonLevelCheck();
 
 	BeenRanked = true;
-
-	OnLastLevel = LevelIndex >= LevelPoints.Num();
 
 	APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 
@@ -130,6 +130,37 @@ FString ALevelState::GetRank()
 bool ALevelState::PlayerWonLevelCheck()
 {
 	if (OnLevelOne)
+	{
+		if (CurrentRank.Contains(MinRankToWinOnLevel1))
+		{
+			return true;
+		}
+		if (CurrentRank.Contains("S"))
+		{
+			return true;
+		}
+		else if (CurrentRank.Contains("A"))
+		{
+			return true;
+		}
+		else if (CurrentRank.Contains("B"))
+		{
+			return true;
+		}
+		else if (CurrentRank.Contains("C"))
+		{
+			return true;
+		}
+		else if (CurrentRank.Contains("F"))
+		{
+			return false;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else if (OnLastLevel)
 	{
 		if (CurrentRank.Contains(MinRankToWinOnLevel1))
 		{
